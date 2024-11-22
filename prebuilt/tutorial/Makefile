@@ -23,15 +23,21 @@
 #
 #
 
-CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -nostartfiles
+CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib
 
 all: clean kernel8.img
 
 start.o: start.S
 	aarch64-elf-gcc $(CFLAGS) -c start.S -o start.o
 
-kernel8.img: start.o
-	aarch64-elf-ld -nostdlib -nostartfiles start.o -T link.ld -o kernel8.elf
+main.o: main.c
+	aarch64-elf-gcc $(CFLAGS) -c main.c -o main.o
+
+uart.o: uart.c
+	aarch64-elf-gcc $(CFLAGS) -c uart.c -o uart.o
+
+kernel8.img: start.o main.o uart.o
+	aarch64-elf-ld -nostdlib start.o main.o uart.o -T link.ld -o kernel8.elf
 	aarch64-elf-objcopy -O binary kernel8.elf kernel8.img
 
 clean:

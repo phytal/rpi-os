@@ -1,0 +1,34 @@
+[package]
+name = "kernel"
+version = "0.1.0"
+authors = [
+    "Sergio Benitez <sb@sergio.bz>",
+    "Taesoo Kim <taesoo@gatech.edu>",
+    "Yechan Bae <yechan@gatech.edu>",
+    "Sujin Park <sujin.park@gatech.edu>",
+    "Mansour Alharthi <mansourah@gatech.edu>",
+    "Sidaarth Sabhnani <ssabhnani@utexas.edu>"
+]
+edition = "2021"
+
+
+[dependencies]
+pi = { path = "../lib/pi" }
+shim = { path = "../lib/shim", features = ["no_std", "alloc"] }
+stack-vec = { path = "../lib/stack-vec/" }
+fat32 = { path = "../lib/fat32/", features = ["no_std"] }
+aarch64 = { path = "../lib/aarch64/" }
+heap = { path = "../lib/heap/" }
+kernel_api = { path = "../lib/kernel_api", default_features = false }
+log = "0.4"
+smoltcp = { version = "0.6", default-features = false, features = [
+    "alloc",
+    "ethernet",
+    "socket-tcp",
+    "proto-ipv4",
+    "log",
+    "verbose",
+] }
+
+[dev-dependencies]
+shim = { path = "../lib/shim", features = ["alloc"]}

@@ -1,0 +1,2 @@
+we need the lifetime of each T to outlive the lifetime of the mutable reference to the storage container
+obviously, the container consists of Ts so if they go out of scope before the container does then we are screwed

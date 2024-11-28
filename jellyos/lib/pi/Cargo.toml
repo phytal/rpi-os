@@ -1,0 +1,16 @@
+[package]
+name = "pi"
+version = "0.1.0"
+authors = [
+    "Sergio Benitez <sb@sergio.bz>",
+    "Taesoo Kim <taesoo@gatech.edu>",
+    "Yechan Bae <yechan@gatech.edu>",
+    "Sujin Park <sujin.park@gatech.edu>",
+    "Mansour Alharthi <mansourah@gatech.edu>"
+]
+edition = "2021"
+
+[dependencies]
+aarch64 = { path = "../aarch64" }
+volatile = { path = "../volatile" }
+shim = { path = "../shim", features = ["no_std"] }

@@ -1,0 +1,17 @@
+[package]
+name = "boot"
+version = "0.1.0"
+authors = [
+    "Sergio Benitez <sb@sergio.bz>",
+    "Taesoo Kim <taesoo@gatech.edu>",
+    "Yechan Bae <yechan@gatech.edu>",
+    "Sujin Park <sujin.park@gatech.edu>",
+    "Mansour Alharthi <mansourah@gatech.edu>"
+]
+edition = "2021"
+
+[dependencies]
+pi = { path = "../lib/pi/" }
+shim = { path = "../lib/shim", features = ["no_std"] }
+xmodem = { path = "../lib/xmodem", features = ["no_std"] }
+aarch64 = { path = "../lib/aarch64/" }

@@ -1,0 +1,3 @@
+Structopt uses code generation (macros) and sets the parser function
+    i.e., parse(try_from_str = "parse_flow_control")
+This function will prevent invalid values by putting an Err as the result so the try_from_str fails.

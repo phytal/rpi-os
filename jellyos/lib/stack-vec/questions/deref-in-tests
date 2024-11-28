@@ -1,0 +1,2 @@
+All tests that treat StackVec like a vector as in indexing or iterator creation (.iter)
+All tests that treat mut StackVec like a vector as in indexing or iterator creation

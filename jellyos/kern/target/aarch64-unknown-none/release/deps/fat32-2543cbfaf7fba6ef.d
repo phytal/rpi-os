@@ -1,0 +1,25 @@
+/Users/phytal/qemu/mnt/rpi/jellyos/kern/target/aarch64-unknown-none/release/deps/libfat32-2543cbfaf7fba6ef.rmeta: /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/lib.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/mbr.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/util.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/mod.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/block_device.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/dummy.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/fs.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/metadata.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/mod.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/cache.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/cluster.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/dir.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/ebpb.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/entry.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/error.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/fat.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/file.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/metadata.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/vfat.rs
+
+/Users/phytal/qemu/mnt/rpi/jellyos/kern/target/aarch64-unknown-none/release/deps/libfat32-2543cbfaf7fba6ef.rlib: /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/lib.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/mbr.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/util.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/mod.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/block_device.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/dummy.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/fs.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/metadata.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/mod.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/cache.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/cluster.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/dir.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/ebpb.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/entry.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/error.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/fat.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/file.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/metadata.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/vfat.rs
+
+/Users/phytal/qemu/mnt/rpi/jellyos/kern/target/aarch64-unknown-none/release/deps/fat32-2543cbfaf7fba6ef.d: /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/lib.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/mbr.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/util.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/mod.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/block_device.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/dummy.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/fs.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/metadata.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/mod.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/cache.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/cluster.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/dir.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/ebpb.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/entry.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/error.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/fat.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/file.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/metadata.rs /Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/vfat.rs
+
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/lib.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/mbr.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/util.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/mod.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/block_device.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/dummy.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/fs.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/traits/metadata.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/mod.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/cache.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/cluster.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/dir.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/ebpb.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/entry.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/error.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/fat.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/file.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/metadata.rs:
+/Users/phytal/qemu/mnt/rpi/jellyos/lib/fat32/src/vfat/vfat.rs:

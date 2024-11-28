@@ -1,0 +1,2 @@
+cargo:rerun-if-changed=.cargo/layout.ld
+cargo:rerun-if-env-changed=VERBOSE_BUILD

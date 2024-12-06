@@ -1,0 +1,5 @@
+TODO
+1. run raspberry bare bones, sid's kernel
+2. get heap working
+3. file system
+4. multi core

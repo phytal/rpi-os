@@ -17,13 +17,13 @@ static inline void mmio_init(int raspi)
 // Memory-Mapped I/O output
 static inline void mmio_write(uint32_t reg, uint32_t data)
 {
-	*(volatile uint32_t*)(MMIO_BASE + reg) = data;
+    *(volatile uint32_t*)((uintptr_t)MMIO_BASE + reg) = data;
 }
 
 // Memory-Mapped I/O input
 static inline uint32_t mmio_read(uint32_t reg)
 {
-	return *(volatile uint32_t*)(MMIO_BASE + reg);
+    return *(volatile uint32_t*)((uintptr_t)MMIO_BASE + reg);
 }
 
 // Loop <delay> times in a way that the compiler won't optimize away
@@ -110,7 +110,7 @@ void uart_init(int raspi)
 	// Set it to 3Mhz so that we can consistently set the baud rate
 	if (raspi >= 3) {
 		// UART_CLOCK = 30000000;
-		unsigned int r = (((unsigned int)(&mbox) & ~0xF) | 8);
+		unsigned int r = (((uintptr_t)(&mbox) & ~0xF) | 8);
 		// wait until we can talk to the VC
 		while ( mmio_read(MBOX_STATUS) & 0x80000000 ) { }
 		// send our message to property channel and wait for the response
@@ -168,7 +168,7 @@ void kernel_main(uint64_t dtb_ptr32, uint64_t x1, uint64_t x2, uint64_t x3)
 {
 	// initialize UART for Raspi2
 	uart_init(2);
-	uart_puts("Hello, kernel World!\r\n");
+	uart_puts("Hello, kernel World!\r\n"); //should print on actual rpi
 
 	while (1)
 		uart_putc(uart_getc());

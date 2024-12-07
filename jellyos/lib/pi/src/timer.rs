@@ -1,4 +1,4 @@
-use core::convert::TryInto;
+//use core::convert::TryInto;
 use core::time::Duration;
 
 use volatile::{ReadVolatile, Volatile};

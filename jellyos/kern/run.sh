@@ -1,4 +1,4 @@
-#!/bin/bash
+!/bin/bash
 
 # Create a temporary file to store QEMU output
 QEMU_OUTPUT=$(mktemp)

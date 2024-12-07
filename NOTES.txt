@@ -1,5 +1,14 @@
 TODO
 1. run raspberry bare bones, sid's kernel
-2. get heap working
-3. file system
+- figure out exception levels
+2. get heap working (
+3. file system, get ide driver, sd interface
 4. multi core
+
+qemu-system-aarch64 \
+    -nographic \
+    -M raspi3b \
+    -serial null -serial mon:stdio \
+    -kernel build/kernel.elf
+
+Ctrl A + X

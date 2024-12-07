@@ -124,7 +124,7 @@ impl Controller {
     }
 
     /// Enables the interrupt as FIQ interrupt
-    pub fn enable_fiq(&mut self, int: Interrupt) {
+    pub fn enable_fiq(&mut self, _int: Interrupt) {
         // Lab 5 2.B
         unimplemented!("enable_fiq")
     }

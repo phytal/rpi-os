@@ -1,18 +1,26 @@
 SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
+ASM_SRCS = $(wildcard *.S)
+ASM_OBJS = $(ASM_SRCS:.S=.o)
 
 CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -nostartfiles
+LDFLAGS = -L./lib
+LIBS = -lsd
+
 
 all: clean kernel8.img
 
-boot.o: boot.S
-	aarch64-elf-gcc $(CLFAGS) -c boot.S -o boot.o
+%.o: %.S
+	aarch64-elf-gcc $(CFLAGS) -c $< -o $@
 
 %.o: %.c
 	aarch64-elf-gcc $(CFLAGS) -c $< -o $@
 
-kernel8.elf: boot.o $(OBJS)
-	aarch64-elf-ld -nostdlib boot.o $(OBJS) -T linker.ld -o kernel8.elf
+lib/libsd.a: 
+	ranlib lib/libsd.a
+
+kernel8.elf: $(ASM_OBJS) $(OBJS) lib/libsd.a
+	aarch64-elf-ld -nostdlib $(ASM_OBJS) $(OBJS) -T linker.ld -o kernel8.elf $(LDFLAGS) $(LIBS)
 
 kernel8.img: kernel8.elf
 	aarch64-elf-objcopy -O binary kernel8.elf kernel8.img

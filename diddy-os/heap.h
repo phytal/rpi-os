@@ -2,11 +2,8 @@
 // #include <stdint.h>
 // #include <stddef.h>
 // #include <stdio.h>
+#include "stddef.h"
 
-typedef unsigned int size_t;
-typedef unsigned int uint32_t;
-typedef int int32_t;
-typedef unsigned int uintptr_t;
 
 //extern void heap_init();
 extern void heapInit(void* start, int bytes);

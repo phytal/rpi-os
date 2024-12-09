@@ -1,20 +1,83 @@
-Spec
-Working code in dummy_os
+Banana OS Documentation
 
+Project Overview
 
-To run:
+A bare metal OS for Raspberry Pi 3B+ written in C with:
 
-To test:
+- Custom bootloader
+- EXT2 filesystem support
+- SD card driver
+- UART serial communication
 
-Our Process
+Project Structure
+.
+├── Makefile
+├── README
+├── boot.S
+├── boot.o
+├── delays.c
+├── delays.h
+├── delays.o
+├── disk-images
+│   ├── bn.img
+│   └── glonk.dd
+├── ext2.c
+├── ext2.h
+├── ext2.o
+├── gic.c
+├── gic.h
+├── gic.o
+├── gpio.h
+├── heap.c
+├── heap.h
+├── heap.o
+├── irq.c
+├── irq.h
+├── irq.o
+├── kernel.c
+├── kernel.o
+├── lib
+│   └── libsd.a
+├── linker.ld
+├── mbox.c
+├── mbox.h
+├── mbox.o
+├── mnt
+├── sd.c
+├── sd.h
+├── sd.o
+├── sprintf.c
+├── sprintf.h
+├── sprintf.o
+├── stdint.h
+├── text-files
+│   ├── grr.txt
+│   ├── skib.txt
+│   └── toil.txt
+├── timer.c
+├── timer.h
+├── timer.o
+├── uart.c
+├── uart.h
+├── uart.o
+├── utils.S
+├── utils.h
+├── utils.o
+├── vectors.S
+└── vectors.o
 
-1. First set up wsl and aarch qemu
-2. Run hobby os to understand how our project should work together
-3. Code heap
-4. Code filesystem
-5. enable multicore and threading
+Build Process
 
-Our Code
+1. Cross-compile for AArch64
+2. Link with custom linker script
+3. Generate raw binary image
+4. Create SD card image with EXT2 filesystem
 
+make all       
+make run      # Run in QEMU
 
-What We Learned
+Testing
+
+QEMU emulation with serial output
+Physical hardware testing
+Unit tests for filesystem code

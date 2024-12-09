@@ -56,3 +56,10 @@ void timer_irq_handler() {
     *TIMER_C1 = next;
     printf("Next interrupt at: %u\n", next);
 }
+
+void timer_wait_micros(uint32_t us) {
+    uint32_t start = *TIMER_CLO;
+    while (*TIMER_CLO - start < us) {
+        // Wait
+    }
+}

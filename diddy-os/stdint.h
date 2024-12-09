@@ -10,6 +10,7 @@ typedef int int32_t;
 typedef unsigned int uint32_t;
 typedef long long int int64_t;
 typedef unsigned long long int uint64_t;
+typedef unsigned int size_t;
 
 /* Minimum-width integer types */
 typedef int8_t int_least8_t;

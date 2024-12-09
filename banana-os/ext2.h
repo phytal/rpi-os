@@ -95,6 +95,8 @@ struct DirectoryEntry {
     char entry_name[255];
 };
 
+void initialize_FS();
+
 
 
 // uint16_t nodeData_get_type(struct NodeData *node)

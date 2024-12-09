@@ -1,26 +1,10 @@
 // .global get_el
 #pragma once
+
+#ifndef UTILS_H
+#define UTILS_H
+
 #include "stdint.h"
-// get_el:
-//     mrs x0, CurrentEL
-//     lsr x0, x0, #2
-//     ret
-
-// .global put32
-// put32:
-//     str w1, [x0]
-//     ret
-// .global get32
-// get32:
-//     ldr w0, [x0]
-//     ret
-
-// .global delay
-// delay:
-//     subs x0, x0, #1
-//     bne delay
-//     ret
-
 
 static inline unsigned int get_el() {
     printf("what is happening\n");
@@ -38,11 +22,14 @@ static inline unsigned int get_el() {
     return el;
 }
 
-// void *memcpy(void *dest, const void *src, size_t n) {
-//     unsigned char *d = (unsigned char*) dest;
-//     const unsigned char *s = (const unsigned char*) src;
-//     while (n--) {
-//         *d++ = *s++;
-//     }
-//     return dest;
-// }
+void *memcpy(void *dest, const void *src, size_t n) {
+    unsigned char *d = (unsigned char*) dest;
+    const unsigned char *s = (const unsigned char*) src;
+    while (n--) {
+        *d++ = *s++;
+    }
+    return dest;
+}
+
+
+#endif // UTILS_H

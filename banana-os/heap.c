@@ -139,7 +139,7 @@ void heapInit(void* base, int bytes) {
 
 void* malloc(size_t bytes) {
     // using namespace gheith;
-    printf("malloc(%d)\n",bytes);
+    // printf("malloc(%d)\n",bytes);
     if (bytes == 0) return (void*) array;
 
     int ints = ((bytes + 3) / 4) + 2;

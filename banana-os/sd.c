@@ -211,14 +211,14 @@ int min(int a, int b){
     return a < b ? a : b;
 }
 
-void *memcpy(void *dest, const void *src, size_t n) {
-    unsigned char *d = (unsigned char*) dest;
-    const unsigned char *s = (const unsigned char*) src;
-    while (n--) {
-        *d++ = *s++;
-    }
-    return dest;
-}
+// void *memcpy(void *dest, const void *src, size_t n) {
+//     unsigned char *d = (unsigned char*) dest;
+//     const unsigned char *s = (const unsigned char*) src;
+//     while (n--) {
+//         *d++ = *s++;
+//     }
+//     return dest;
+// }
 
 //offset in bytes, 
 int64_t read(uint32_t offset, uint32_t desired_n, char* buffer) {

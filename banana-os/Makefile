@@ -19,8 +19,8 @@ all: clean kernel8.img
 lib/libsd.a: 
 	ranlib lib/libsd.a
 
-kernel8.elf: $(ASM_OBJS) $(OBJS) lib/libsd.a
-	aarch64-elf-ld -nostdlib $(ASM_OBJS) $(OBJS) -T linker.ld -o kernel8.elf $(LDFLAGS) $(LIBS)
+kernel8.elf: $(ASM_OBJS) $(OBJS)
+	aarch64-elf-ld -nostdlib $(ASM_OBJS) $(OBJS) -T linker.ld -o kernel8.elf $(LDFLAGS)
 
 kernel8.img: kernel8.elf
 	aarch64-elf-objcopy -O binary kernel8.elf kernel8.img

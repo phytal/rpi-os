@@ -9,7 +9,7 @@ A bare metal OS for Raspberry Pi 3B+ written in C with:
 - SD card driver
 - UART serial communication
 
-Build Process
+Build Process 
 
 1. Cross-compile for AArch64
 2. Link with custom linker script

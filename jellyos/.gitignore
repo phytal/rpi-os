@@ -1,9 +1,0 @@
-target/
-build/
-TAGS
-.dep
-**/*/cache
-
-lib/**/Cargo.lock
-ext/fat32-imgs/*.fat32.img
-**/.DS_Store

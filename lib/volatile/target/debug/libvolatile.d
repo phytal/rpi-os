@@ -1,0 +1,1 @@
+/Users/phytal/qemu/mnt/rpi/lib/volatile/target/debug/libvolatile.rlib: /Users/phytal/qemu/mnt/rpi/lib/volatile/src/lib.rs /Users/phytal/qemu/mnt/rpi/lib/volatile/src/macros.rs /Users/phytal/qemu/mnt/rpi/lib/volatile/src/traits.rs

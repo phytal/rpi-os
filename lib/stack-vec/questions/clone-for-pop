@@ -1,0 +1,22 @@
+#[inline]
+    #[stable(feature = "rust1", since = "1.0.0")]
+    pub fn pop(&mut self) -> Option<T> {
+        if self.len == 0 {
+            None
+        } else {
+            unsafe {
+                self.len -= 1;
+                core::hint::assert_unchecked(self.len < self.capacity());
+                Some(ptr::read(self.as_ptr().add(self.len())))
+            }
+        }
+    }
+
+this is the code for Rust's pop method.
+
+for us, we don't own the container we just have a mutable reference to it. we cannot move data out of it.
+if we owned the storage ourselves, we could move it out of there with take.
+we could also do unsafe like above.
+
+cannot move out of `self.storage[_]` which is behind a mutable reference
+move occurs because `self.storage[_]` has type `T`, which does not implement the `Copy` trait

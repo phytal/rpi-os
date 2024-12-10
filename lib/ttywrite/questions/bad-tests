@@ -1,0 +1,2 @@
+The XMODEM protocol expects both the sender and receiver to be able to write and read.
+We would have to set-up processes that are both running XMODEM so they can transmit, recieve.

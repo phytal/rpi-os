@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "__bit_reference": "c",
+        "__split_buffer": "c",
+        "array": "c",
+        "bitset": "c",
+        "iterator": "c",
+        "initializer_list": "c",
+        "string": "c",
+        "string_view": "c",
+        "vector": "c",
+        "uart.h": "c",
+        "timer.h": "c"
+    }
+}

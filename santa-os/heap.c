@@ -139,7 +139,7 @@ void heapInit(void* base, int bytes) {
 
 void* malloc(size_t bytes) {
     // using namespace gheith;
-    printf("malloc(%d)\n",bytes);
+    // printf("malloc(%d)\n",bytes);
     if (bytes == 0) return (void*) array;
 
     int ints = ((bytes + 3) / 4) + 2;
@@ -158,7 +158,7 @@ void* malloc(size_t bytes) {
         int p = avail;
         while (p != 0) {
             if (!isAvail(p)) {
-                printf("block is not available in malloc %p\n",p);
+                printf("block is not available in malloc %d\n",p);
             }
             int sz = size(p);
 
@@ -193,17 +193,17 @@ void* malloc(size_t bytes) {
 
 void free(void* p) {
     // using namespace gheith;
-    printf("this is p: %x\n", p);
+    // printf("this is p: %x\n", p);
     if (p == 0) return;
     if (p == (void*) array) return;
 
     // LockGuardP g{theLock};
 
     int idx = ((((uintptr_t) p) - ((uintptr_t) array)) / 4) - 1;
-    printf("freeing idx: %d, %x\n", idx, idx);
+    // printf("freeing idx: %d, %x\n", idx, idx);
     sanity(idx);
     if (!isTaken(idx)) {
-        printf("freeing free block, p:%x idx:%d\n",(uint32_t) p,(int32_t) idx);
+        printf("freeing free block, p:%x idx:%d\n",(uintptr_t) p,(int32_t) idx);
         return;
     }
 

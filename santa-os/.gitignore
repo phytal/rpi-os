@@ -1,0 +1,4 @@
+# Build output
+*.o
+kernel8.elf
+kernel8.img

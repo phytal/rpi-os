@@ -1,37 +1,23 @@
-// .global get_el
-// get_el:
-//     mrs x0, CurrentEL
-//     lsr x0, x0, #2
-//     ret
+#ifndef UTILS_H
+#define UTILS_H
 
-// .global put32
-// put32:
-//     str w1, [x0]
-//     ret
-// .global get32
-// get32:
-//     ldr w0, [x0]
-//     ret
+#include "stddef.h"
 
-// .global delay
-// delay:
-//     subs x0, x0, #1
-//     bne delay
-//     ret
-
-
-static inline unsigned int get_el() {
-    printf("what is happening\n");
-    // asm volatile("mrs x0, CurrentEL");
-    // asm volatile("lsr x0, x0, #2");
-    // asm volatile("ret");
+static inline unsigned int get_el(void) {
     unsigned int el;
     asm volatile (
         "mrs %0, CurrentEL\n"  // Read CurrentEL into the C variable 'el'
         "lsr %0, %0, #2"       // Logical shift right by 2 to extract EL
-        : "=r" (el)            // Output operand
+        : "=r" (el)
         :
-        : "memory"             // Indicate that memory might be affected
+        : "memory"
     );
     return el;
 }
+
+// Defined in utils.c. GCC may also emit calls to these on its own, even with
+// -ffreestanding, so they have to exist somewhere in the kernel.
+void *memcpy(void *dest, const void *src, size_t n);
+void *memset(void *dest, int c, size_t n);
+
+#endif // UTILS_H

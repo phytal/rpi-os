@@ -5,10 +5,10 @@
 #include "timer.h"
 #include "gic.h"
 #include "mmu.h"
-
-#define NCORES 4
-#define KERN_STACK_BASE 0x80000
-#define KERN_STACK_SIZE 0x10000
+#include "heap.h"
+#include "ext2.h"
+#include "utils.h"
+#include "constants.h"
 
 // Memory barrier for core synchronization  
 static inline void dmb(void) {
@@ -25,13 +25,15 @@ static inline void dsb(void) {
     asm volatile("dsb sy");
 }
 
+static inline void wfe(void) {
+    asm volatile("wfe");
+}
+
 // Forward declarations
 void kinit(void);
 void kinit2(void);
 void kmain(void);
 void kmain2(void);
-void switch_to_el2(void);
-void switch_to_el1(void);
 void zeros_bss(void);
 void initialize_app_cores(void);
 
@@ -54,10 +56,6 @@ extern uint64_t vectors_start;
     __asm__ volatile("msr " #reg ", %0" :: "r"((uint64_t)(val)))
 
 // ARM system instructions
-static inline void eret(void) {
-    __asm__ volatile("eret");
-}
-
 static inline void sev(void) {
     __asm__ volatile("sev");
 }
@@ -75,39 +73,6 @@ void zeros_bss(void) {
     }
 }
 
-void switch_to_el2(void) {
-    if (current_el() == 3) {
-        uint64_t sp = READ_SYSTEM_REG(SP_EL0);
-        WRITE_SYSTEM_REG(SP_EL2, sp);
-        uint64_t scr = (1ULL << 10) | (1ULL << 8) | (1ULL << 7) | (1ULL << 6) | (1ULL << 0);
-        WRITE_SYSTEM_REG(SCR_EL3, scr);
-        uint64_t spsr = 0x9 | (1ULL << 6) | (1ULL << 7) | (1ULL << 8) | (1ULL << 9);
-        WRITE_SYSTEM_REG(SPSR_EL3, spsr);
-        WRITE_SYSTEM_REG(ELR_EL3, (uint64_t)switch_to_el2);
-        eret();
-    }
-}
-
-void switch_to_el1(void) {
-    if (current_el() == 2) {
-        uint64_t sp = READ_SYSTEM_REG(SP_EL0);
-        WRITE_SYSTEM_REG(SP_EL1, sp);
-        uint64_t cnthctl = READ_SYSTEM_REG(CNTHCTL_EL2);
-        WRITE_SYSTEM_REG(CNTHCTL_EL2, cnthctl | (1ULL << 1) | (1ULL << 0));
-        WRITE_SYSTEM_REG(CNTVOFF_EL2, 0);
-        WRITE_SYSTEM_REG(HCR_EL2, (1ULL << 31) | (1ULL << 29));
-        WRITE_SYSTEM_REG(CPTR_EL2, 0);
-        uint64_t cpacr = READ_SYSTEM_REG(CPACR_EL1);
-        WRITE_SYSTEM_REG(CPACR_EL1, cpacr | (3ULL << 20));
-        WRITE_SYSTEM_REG(SCTLR_EL1, 0x30C50830);
-        WRITE_SYSTEM_REG(VBAR_EL1, (uint64_t)&vectors_start);
-        uint64_t spsr = 0x5 | (1ULL << 6) | (1ULL << 7) | (1ULL << 8) | (1ULL << 9);
-        WRITE_SYSTEM_REG(SPSR_EL2, spsr);
-        WRITE_SYSTEM_REG(ELR_EL2, (uint64_t)switch_to_el1);
-        eret();
-    }
-}
-
 // Per-core initialization status
 volatile uint32_t cores_ready = 0;
 
@@ -115,28 +80,9 @@ volatile uint32_t cores_ready = 0;
 void start2(void) __attribute__((noreturn));
 
 void __attribute__((noreturn)) start2(void) {
-    // Ensure we're in the correct exception level
-    if (current_el() > 1) {
-        switch_to_el1();
-    }
-    
-    // Initialize core-specific hardware
-    uint64_t core_id = READ_SYSTEM_REG(MPIDR_EL1) & 0xFF;
-    uint64_t stack_top = KERN_STACK_BASE - (core_id * KERN_STACK_SIZE);
-    
-    // Set up stack and vector table
-    WRITE_SYSTEM_REG(SP_EL1, stack_top);
-    WRITE_SYSTEM_REG(VBAR_EL1, (uint64_t)&vectors_start);
-    
-    // Signal ready
-    dmb();
-    cores_ready |= (1 << core_id);
-    dsb();
-    sev();
-    
+    // boot.S:secondary_start already gave us a stack, EL1 and VBAR_EL1.
     kmain2();
-    
-    while(1) { 
+    while(1) {
         wfe();
     }
 }
@@ -174,35 +120,60 @@ void __attribute__((noreturn)) start2(void) {
 // }
 
 #define QEMU_SPIN_TABLE 0xd8
+extern void secondary_start(void);
 
 void initialize_app_cores(void) {
     printf("Initializing secondary cores...\n");
 
-    // Ensure QEMU spin table address is accessible
-    volatile uint64_t* qemu_spin_table = (volatile uint64_t*)QEMU_SPIN_TABLE;
+    volatile uint64_t* spin_table = (volatile uint64_t*)QEMU_SPIN_TABLE;
 
-    // Set entry point for each secondary core
+    // One core at a time: printf() shares a single buffer at _end, and
+    // without the MMU/caches on we can't rely on exclusive-access spinlocks.
     for (int core = 1; core < NCORES; core++) {
-        printf("Setting entry for core %d\n", core);
-        qemu_spin_table[core] = (uint64_t)start2;
+        printf("Starting core %d\n", core);
+        spin_table[core] = (uint64_t)secondary_start;
+        dsb();
+        sev();
+        while (!(cores_ready & (1 << core))) {
+            dmb();
+        }
     }
-
-    // Ensure the writes complete before signaling cores
-    dsb();
-    sev();  // Wake up secondary cores
+    printf("All %d cores running (ready mask 0x%x)\n", NCORES, cores_ready);
 }
 
 void kmain2(void) {
-    printf("Hello from core %lx!\n", READ_SYSTEM_REG(MPIDR_EL1) & 0xFF);
-    uint64_t core_num = READ_SYSTEM_REG(MPIDR_EL1) & 0xFF;
+    uint64_t core_num = READ_SYSTEM_REG(MPIDR_EL1) & 0x3;
+    printf("Hello from core %d! (EL%d)\n", (int)core_num, (int)current_el());
     SPINNING_BASE[core_num] = 0;
-    while(1) { }
+    dmb();
+    cores_ready |= (1 << core_num);
+    dsb();
+    sev();
+    while(1) {
+        wfe();
+    }
 }
 
 void set_vector_table(void) {
     extern uint64_t vectors_start;
     WRITE_SYSTEM_REG(VBAR_EL1, (uint64_t)&vectors_start);
     isb();  // Instruction synchronization barrier
+}
+
+// Heap smoke test carried over from banana-os/kernel.c.
+static void heap_tests(void) {
+    printf("<------------ HEAP TESTS ------------>\n");
+    int* num1 = malloc(sizeof(int));
+    int* num2 = malloc(sizeof(int));
+
+    *num1 = 15;
+    *num2 = 18;
+    printf("before bum1 and bum2: %d, %d\n", *num1, *num2);
+    memcpy(num2, num1, sizeof(int));
+    printf("after bum1 and bum2: %d, %d\n", *num1, *num2);
+    free(num1);
+    free(num2);
+    printf("<------------ END OF HEAP TESTS ------------>\n\n");
 }
 
 void __attribute__((noreturn)) kinit(void) {
@@ -213,22 +184,6 @@ void __attribute__((noreturn)) kinit(void) {
     // Get current exception level
     uint64_t el = current_el();
     printf("Current EL: %d\n", el);
-    
-    // Initialize stack for current core
-    uint64_t mpidr = READ_SYSTEM_REG(MPIDR_EL1);
-    uint64_t core_id = mpidr & 0xFF;
-    uint64_t stack_top = KERN_STACK_BASE - (core_id * KERN_STACK_SIZE);
-    WRITE_SYSTEM_REG(SP_EL0, stack_top);
-    
-    // Switch exception levels if needed
-    if (el > 2) {
-        uart_puts("Switching to EL2\n");
-        switch_to_el2();
-    }
-    if (el > 1) {
-        uart_puts("Switching to EL1\n");
-        switch_to_el1();
-    }
     
     // Initialize core subsystems
     uart_puts("Initializing core subsystems\n");
@@ -244,6 +199,12 @@ void __attribute__((noreturn)) kinit(void) {
     printf("Vector table at: 0x%lx\n", vbar);
     
     uart_init();
+
+    heapInit((void*)HEAP_START, HEAP_SIZE);
+    heap_tests();
+
+    printf("| Initializing file system... \n");
+    initialize_FS();
 
     printf("Initializing interrupts...\n");
     gic_init();

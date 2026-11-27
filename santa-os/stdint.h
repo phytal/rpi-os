@@ -32,8 +32,8 @@ typedef int64_t int_fast64_t;
 typedef uint64_t uint_fast64_t;
 
 /* Integer types capable of holding object pointers */
-typedef int32_t intptr_t;
-typedef uint32_t uintptr_t;
+typedef int64_t intptr_t;    // pointers are 64-bit on AArch64
+typedef uint64_t uintptr_t;
 
 /* Greatest-width integer types */
 typedef int64_t intmax_t;
@@ -91,9 +91,9 @@ typedef uint64_t uintmax_t;
 #define UINT_FAST64_MAX UINT64_MAX
 
 /* Limits of integer types capable of holding object pointers */
-#define INTPTR_MIN      INT32_MIN
-#define INTPTR_MAX      INT32_MAX
-#define UINTPTR_MAX     UINT32_MAX
+#define INTPTR_MIN      INT64_MIN
+#define INTPTR_MAX      INT64_MAX
+#define UINTPTR_MAX     UINT64_MAX
 
 /* Limits of greatest-width integer types */
 #define INTMAX_MIN      INT64_MIN

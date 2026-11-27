@@ -3,20 +3,12 @@
 #include "uart.h"
 #include "timer.h"
 
-extern void vectors_start(void);
 static void (*irq_handlers[64])(void);
-
-// irq.c 
-void irq_handler(void) __attribute__((alias("handle_irq")));
 
 void irq_init(void) {
     for (int i = 0; i < 64; i++) {
         irq_handlers[i] = 0;
     }
-}
-
-void irq_vector_init(void) {
-    asm volatile("msr vbar_el1, %0" :: "r"(vectors_start));
 }
 
 void enable_irq(void) {

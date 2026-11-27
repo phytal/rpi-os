@@ -7,7 +7,6 @@ ASM_OBJS = $(ASM_SRCS:.S=.o)
 #   unaligned accesses fault.
 CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -nostartfiles -mgeneral-regs-only -mstrict-align -I.
 DISK_IMG = disk-images/bn.img
-TTY_PATH := /dev/tty.usbserial-0001
 
 all: clean kernel8.img
 
@@ -22,28 +21,6 @@ kernel8.elf: $(ASM_OBJS) $(OBJS)
 
 kernel8.img: kernel8.elf
 	aarch64-elf-objcopy -O binary kernel8.elf kernel8.img
-
-transmit: kernel8.img
-	@echo "+ Transmitting kernel8.img to $(TTY_PATH)"
-	ttywrite -i kernel8.img $(TTY_PATH)
-	screen $(TTY_PATH) 115200
-
-# Replace the transmit-alt target with this improved version
-transmit-alt: kernel8.img check-device
-	@echo "+ Using alternative transfer method at $(BAUDRATE) baud"
-	@stty -f $(TTY_PATH) $(BAUDRATE) raw -echo
-	@(sleep 1; cat kernel8.img) > $(TTY_PATH) & \
-	cat $(TTY_PATH)
-
-# Add new check-device target
-check-device:
-	@if [ ! -e $(TTY_PATH) ]; then \
-		echo "Error: $(TTY_PATH) not found"; \
-		echo "Available serial devices:"; \
-		ls -l /dev/tty.*; \
-		exit 1; \
-	fi
-	@echo "Found device: $(TTY_PATH)"
 
 clean:
 	rm -f *.o kernel8.elf kernel8.img >/dev/null 2>/dev/null || true

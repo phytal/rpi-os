@@ -1,1 +1,0 @@
-/Users/phytal/qemu/mnt/rpi/lib/xmodem/target/debug/libxmodem.rlib: /Users/phytal/qemu/mnt/rpi/lib/shim/src/lib.rs /Users/phytal/qemu/mnt/rpi/lib/shim/src/macros.rs /Users/phytal/qemu/mnt/rpi/lib/shim/src/std.rs /Users/phytal/qemu/mnt/rpi/lib/xmodem/src/lib.rs /Users/phytal/qemu/mnt/rpi/lib/xmodem/src/progress.rs /Users/phytal/qemu/mnt/rpi/lib/xmodem/src/read_ext.rs

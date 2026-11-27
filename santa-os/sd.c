@@ -7,16 +7,6 @@
 #include "utils.h"
 #include "ext2.h"
 
-void wait_micros(uint32_t us) {
-    //use timer
-    // printf("waiting some micros\n");
-    wait_msec(us);
-    // uint32_t start = timer_get();
-    // while ((timer_get() - start) < us) {
-    //     printf("icro\n");
-    // }
-}
-
 #define EMMC_ARG2           ((volatile unsigned int*)(MMIO_BASE+0x00300000))
 #define EMMC_BLKSIZECNT     ((volatile unsigned int*)(MMIO_BASE+0x00300004))
 #define EMMC_ARG1           ((volatile unsigned int*)(MMIO_BASE+0x00300008))
@@ -105,9 +95,7 @@ void wait_micros(uint32_t us) {
 
 unsigned long sd_scr[2], sd_ocr, sd_rca, sd_err, sd_hv;
 
-// void sd_readblock(uint32_t sector, char* buffer){
       
-// }
 
 /**
  * Wait for data or command ready
@@ -145,7 +133,6 @@ int sd_cmd(unsigned int code, unsigned int arg)
         code &= ~CMD_NEED_APP;
     }
     if(sd_status(SR_CMD_INHIBIT)) { uart_puts("ERROR: EMMC busy\n"); sd_err= SD_TIMEOUT;return 0;}
-    // uart_puts("EMMC: Sending command ");uart_hex(code);uart_puts(" arg ");uart_hex(arg);uart_puts("\n");
     *EMMC_INTERRUPT=*EMMC_INTERRUPT; *EMMC_ARG1=arg; *EMMC_CMDTM=code;
     if(code==CMD_SEND_OP_COND) wait_msec(1000); else
     if(code==CMD_SEND_IF_COND || code==CMD_APP_CMD) wait_msec(100);
@@ -173,7 +160,6 @@ int sd_readsector(unsigned int lba, unsigned char *buffer, unsigned int num)
 {
     int r,c=0,d;
     if(num<1) num=1;
-    // uart_puts("sd_readblock lba ");uart_hex(lba);uart_puts(" num ");uart_hex(num);uart_puts("\n");
     if(sd_status(SR_DAT_INHIBIT)) {sd_err=SD_TIMEOUT; return 0;}
     unsigned int *buf=(unsigned int *)buffer;
     if(sd_scr[0] & SCR_SUPP_CCS) {
@@ -203,7 +189,6 @@ int sd_readsector(unsigned int lba, unsigned char *buffer, unsigned int num)
 //ide readblock
 void read_block(uint32_t block_number, char* buffer){
     sd_readsector(block_number, (unsigned char *)buffer, 1);
-    //printf("finishing read block..%d\n", check);
 }
 
 //read, read_all
@@ -211,41 +196,26 @@ int min(int a, int b){
     return a < b ? a : b;
 }
 
-// void *memcpy(void *dest, const void *src, size_t n) {
-//     unsigned char *d = (unsigned char*) dest;
-//     const unsigned char *s = (const unsigned char*) src;
-//     while (n--) {
-//         *d++ = *s++;
-//     }
-//     return dest;
-// }
 
 //offset in bytes, 
 int64_t read(uint32_t offset, uint32_t desired_n, char* buffer) {
     uint32_t sz = 0x7FFFFFFF; //max uint32
-    //printf("what is sz: %d\n", sz);
     if (offset > sz) return -1;
     if (offset == sz) return 0;
     int block_size = 512; //sector size
 
     int n = min(desired_n,sz - offset);
-    //auto end_offset = K::min(offset+n,sz);
     int block_number = offset / 512;
     int offset_in_block = offset % block_size;
     int actual_n = min(block_size - offset_in_block, n);
     
     if (actual_n == block_size) {
-        //printf("reading whole block %d\n",block_number);
         // we can read in-place
         read_block(block_number,buffer);
     } else {
         char temp[block_size];
-        // char *temp = malloc(sizeof(char) * block_size);
-        //printf("reading partial block %d\n",block_number);
         read_block(block_number,temp);
-        //printf("getting %d bytes starting at block offset %d\n",actual_n,offset_in_block);
         memcpy(buffer,&temp[offset_in_block],actual_n);
-        // delete []temp;
     }
     return actual_n;
 }
@@ -254,31 +224,17 @@ int64_t read(uint32_t offset, uint32_t desired_n, char* buffer) {
 int64_t read_all(uint32_t offset, uint32_t n, char* buffer) {
     int64_t total_count = 0;
     while (n > 0) {
-        //printf("hello read_all\n");
         int64_t cnt = read(offset,n,buffer);
         if (cnt < 0) return cnt;
         if (cnt == 0) return total_count;
         total_count += cnt;
         offset += cnt;
         n -= cnt;
-        //printf("n: %d\n", n);
         buffer += cnt;
     }
-    //printf("total count read_all: %d\n", total_count);
     return total_count;
 }
 
-// void show(struct NodeData* node){
-//     int sz = node->size_low;
-//     char buffer[sz+1];
-//     buffer[sz] = 0;
-//     auto cnt = read_all(0,sz,buffer);
-//     for (uint32_t i=0; i<cnt; i++) {
-//         printf("%c",buffer[i]);
-//     }
-//     //delete[] buffer;
-//     printf("\n");
-// }
 
 /**
  * set SD clock to frequency in Hz
@@ -305,7 +261,6 @@ int sd_clk(unsigned int f)
     }
     if(sd_hv>HOST_SPEC_V2) d=c; else d=(1<<s);
     if(d<=2) {d=2;s=0;}
-    // uart_puts("sd_clk divisor ");uart_hex(d);uart_puts(", shift ");uart_hex(s);uart_puts("\n");
     if(sd_hv>HOST_SPEC_V2) h=(d&0x300)>>2;
     d=(((d&0x0ff)<<8)|h);
     *EMMC_CONTROL1=(*EMMC_CONTROL1&0xffff003f)|d; wait_msec(10);
@@ -364,7 +319,6 @@ int sd_init()
     cnt=6; r=0; while(!(r&ACMD41_CMD_COMPLETE) && cnt--) {
         wait_cycles(400);
         r=sd_cmd(CMD_SEND_OP_COND,ACMD41_ARG_HC);
-        // uart_puts("EMMC: CMD_SEND_OP_COND returned ");
         if(r&ACMD41_CMD_COMPLETE)
             uart_puts("COMPLETE ");
         if(r&ACMD41_VOLTAGE)
@@ -428,39 +382,6 @@ int sd_init()
 }
 
 
-// typedef struct {
-//     // Add any necessary fields here
-// } Sd;
 
-// Sd sd_newInstance() {
-//     Sd sd;
-//     int32_t init_result = sd_init();
-//     if (init_result == 0) {
-//         // Initialize any necessary fields here
-//     } else {
-//         printf("sdcard err: \n");
-//         if (init_result == -1) {
-//             printf("SD Card initialization timed out");
-//         } else if (init_result == -2) {
-//             printf("SD Card did not receive commands");
-//         } else {
-//             printf("Unknown error");
-//         }
-//     }
-//     return sd;
-// }
 
-// size_t sd_readSector(Sd* sd, uint64_t n, uint8_t* buf) {
-//     if (n > 0x7FFFFFFFFFFFFFFF) {
-//         printf("Sector number out of range");
-//     }
-//     int32_t bytes_read = sd_readsector((int32_t)n, buf);
-//     if (bytes_read <= 0) {
-//        printf("Failed to read sector");
-//     }
-//     return (size_t)bytes_read;
-// }
 
-// void sd_writeSector(Sd* sd, uint64_t n, const uint8_t* buf) {
-//     printf("SD card and file system are read-only");
-// }

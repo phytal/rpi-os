@@ -1,11 +1,5 @@
 #include "heap.h"
-//#include "sprintf.h"
 #include "uart.h"
-// #include "debug.h"
-//#include <stdint.h>
-//#include <stddef.h>
-//#include <stdio.h>
-//#include "blocking_lock.h"
 
 /* A first-fit heap */
 
@@ -13,7 +7,6 @@ static int *array;
 static int len;
 static int safe = 0;
 static int avail = 0;
-//static BlockingLock *theLock = nullptr;
 
 void makeTaken(int i, int ints);
 void makeAvail(int i, int ints);
@@ -99,7 +92,6 @@ void remove(int i) {
 }
 
 void makeAvail(int i, int ints) {
-    // printf("this is available: %d, %d\n", i, footerFromHeader(i));
     array[i] = ints;
     array[footerFromHeader(i)] = ints;    
     setNext(i,avail);
@@ -111,7 +103,6 @@ void makeAvail(int i, int ints) {
 }
 
 void makeTaken(int i, int ints) {
-    // printf("this is taken: %d: %d\n", i, footerFromHeader(i));
     array[i] = -ints;
     array[footerFromHeader(i)] = -ints;    
 }
@@ -124,29 +115,43 @@ int isTaken(int i) {
     return array[i] < 0;
 }
 
+/*
+ * Alignment: every block is a multiple of BLOCK_ALIGN ints and starts at an
+ * index that is 3 mod 4, so the user pointer &array[it+1] is 16-byte aligned
+ * (what the AArch64 ABI expects from malloc). The original heap only gave
+ * 4-byte alignment, and with the MMU off an 8-byte load/store to a 4-byte
+ * aligned address is an alignment fault (e.g. storing a pointer in a
+ * malloc'd array).
+ */
+#define BLOCK_ALIGN 4                   /* ints: 16 bytes */
+
 void heapInit(void* base, int bytes) {
 
-    printf("| heap range 0x%x 0x%x\n", base, base+bytes);
+    /* round the base up to 16 bytes */
+    uintptr_t start = ((uintptr_t) base + 15) & ~(uintptr_t) 15;
+    bytes -= (int) (start - (uintptr_t) base);
+
+    printf("| heap range 0x%x 0x%x\n", start, start + bytes);
 
     /* can't say new becasue we're initializing the heap */
-    array = (int*) base;
+    array = (int*) start;
     len = bytes / 4;
-    makeTaken(0,2);
-    makeAvail(2,len-4);
-    makeTaken(len-2,2);
-    // theLock = new BlockingLock();
+
+    /* [start sentinel: 3 ints][free block: multiple of 4 ints][end sentinel: 2 ints] */
+    int first = (len - 5) / BLOCK_ALIGN * BLOCK_ALIGN;
+    makeTaken(0,3);
+    makeAvail(3,first);
+    makeTaken(3+first,2);
+    len = 3 + first + 2;
 }
 
 void* malloc(size_t bytes) {
-    // using namespace gheith;
-    // printf("malloc(%d)\n",bytes);
     if (bytes == 0) return (void*) array;
 
     int ints = ((bytes + 3) / 4) + 2;
-    // printf("what is ints: %d\n", ints);
     if (ints < 4) ints = 4;
+    ints = (ints + BLOCK_ALIGN - 1) / BLOCK_ALIGN * BLOCK_ALIGN;   /* keep blocks 16-byte aligned */
 
-    // LockGuardP g{theLock};
 
     void* res = 0;
 
@@ -178,9 +183,7 @@ void* malloc(size_t bytes) {
         remove(it);
         int extra = mx - ints;
         if (extra >= 4) {
-            // printf("what the duck\n");
             makeTaken(it,ints);
-            // printf("what the fuck 2\n");
             makeAvail(it+ints,extra);
         } else {
             makeTaken(it,mx);
@@ -192,15 +195,11 @@ void* malloc(size_t bytes) {
 }
 
 void free(void* p) {
-    // using namespace gheith;
-    // printf("this is p: %x\n", p);
     if (p == 0) return;
     if (p == (void*) array) return;
 
-    // LockGuardP g{theLock};
 
     int idx = ((((uintptr_t) p) - ((uintptr_t) array)) / 4) - 1;
-    // printf("freeing idx: %d, %x\n", idx, idx);
     sanity(idx);
     if (!isTaken(idx)) {
         printf("freeing free block, p:%x idx:%d\n",(uintptr_t) p,(int32_t) idx);
@@ -227,34 +226,7 @@ void free(void* p) {
 }
 
 
-// /*****************/
-// /* C++ operators */
-// /*****************/
 
-// void* operator new(size_t size) {
-//     void* p =  malloc(size);
-//     if (p == 0) printf("out of memory");
-//     return p;
-// }
 
-// void operator delete(void* p) noexcept {
-//     return free(p);
-// }
 
-// void operator delete(void* p, size_t sz) {
-//     return free(p);
-// }
 
-// void* operator new[](size_t size) {
-//     void* p =  malloc(size);
-//     if (p == 0) printf("out of memory");
-//     return p;
-// }
-
-// void operator delete[](void* p) noexcept {
-//     return free(p);
-// }
-
-// void operator delete[](void* p, size_t sz) {
-//     return free(p);
-// }

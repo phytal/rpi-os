@@ -1,1 +1,0 @@
-/Users/phytal/qemu/mnt/rpi/lib/shim/target/debug/libshim.rlib: /Users/phytal/qemu/mnt/rpi/lib/shim/src/lib.rs /Users/phytal/qemu/mnt/rpi/lib/shim/src/macros.rs /Users/phytal/qemu/mnt/rpi/lib/shim/src/std.rs

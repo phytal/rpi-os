@@ -44,7 +44,6 @@
 
 // Function declarations
 void irq_init(void);
-void irq_vector_init(void);
 void enable_irq(void);
 void disable_irq(void);
 void register_irq_handler(int irq, void (*handler)(void));

@@ -41,13 +41,17 @@ unsigned int vsprintf(char *dst, char* fmt, __builtin_va_list args)
                 continue;
             } else
             // decimal number
-            if(*fmt=='d') {
-                arg = __builtin_va_arg(args, int);
+            if(*fmt=='d' || *fmt=='u') {
                 // check input
                 sign=0;
-                if((int)arg<0) {
-                    arg*=-1;
-                    sign++;
+                if(*fmt=='u') {
+                    arg = __builtin_va_arg(args, unsigned int);
+                } else {
+                    arg = __builtin_va_arg(args, int);
+                    if(arg<0) {
+                        arg*=-1;
+                        sign++;
+                    }
                 }
                 if(arg>99999999999999999L) {
                     arg=99999999999999999L;

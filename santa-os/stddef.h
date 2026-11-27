@@ -1,9 +1,13 @@
-typedef unsigned int size_t;
-typedef unsigned int uint32_t;
-typedef int int32_t;
-typedef unsigned int uintptr_t;
+#ifndef STDDEF_H
+#define STDDEF_H
 
-typedef int int32_t;
-typedef char int8_t;
-typedef unsigned long uint64_t;
-typedef unsigned char uint8_t;
+// Fixed-width types live in stdint.h; this file only adds size_t and NULL.
+// (It used to redefine uint64_t/int8_t with different types than stdint.h,
+// so any file including both failed to compile.)
+#include "stdint.h"
+
+typedef unsigned long size_t;
+
+#define NULL ((void*)0)
+
+#endif /* STDDEF_H */

@@ -7,10 +7,8 @@ void gic_init() {
     *((volatile uint32_t*)(IRQ_DISABLE_2)) = 0xFFFFFFFF;
     *((volatile uint32_t*)(IRQ_DISABLE_BASIC)) = 0xFFFFFFFF;
 
-    // Clear all pending interrupts
-    *((volatile uint32_t*)(IRQ_BASIC_PENDING)) = 0xFFFFFFFF;
-    *((volatile uint32_t*)(IRQ_PENDING_1)) = 0xFFFFFFFF;
-    *((volatile uint32_t*)(IRQ_PENDING_2)) = 0xFFFFFFFF;
+    // The pending registers are read-only; a pending bit clears when the
+    // device that raised it (timer, UART, ...) is acknowledged.
 }
 
 void gic_enable_interrupt(uint32_t interrupt_id) {

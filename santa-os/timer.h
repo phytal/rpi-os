@@ -19,5 +19,6 @@ uint32_t timer_get(void);
 void timer_enable_interrupt(void);
 void timer_disable_interrupt(void);
 void timer_irq_handler(void);
+void timer_wait_micros(uint32_t us);
 
 #endif

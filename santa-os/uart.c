@@ -21,25 +21,6 @@ void uart_init()
     // initialize UART
     *UART0_CR = 0;         // turn off UART0
 
-    /* set up clock for consistent divisor values */
-    // mbox[0] = 9*4;
-    // mbox[1] = MBOX_REQUEST;
-    // mbox[2] = MBOX_TAG_SETCLKRATE; // set clock rate
-    // mbox[3] = 12;
-    // mbox[4] = 8;
-    // mbox[5] = 2;           // UART clock
-    // mbox[6] = 4000000;     // 4Mhz
-    // mbox[7] = 0;           // clear turbo
-    // mbox[8] = MBOX_TAG_LAST;
-    // mbox_call(MBOX_CH_PROP);
-    // *AUX_ENABLE |=1;       // enable UART1, AUX mini uart
-    // *AUX_MU_IER = 0;
-    // *AUX_MU_CNTL = 0;
-    // *AUX_MU_LCR = 3;       // 8 bits
-    // *AUX_MU_MCR = 0;
-    // *AUX_MU_IER = 0;
-    // *AUX_MU_IIR = 0xc6;    // disable interrupts
-    // *AUX_MU_BAUD = 270;    // 115200 baud
     /* map UART1 to GPIO pins */
     r=*GPFSEL1;
     r&=~((7<<12)|(7<<15)); // gpio14, gpio15
@@ -50,7 +31,6 @@ void uart_init()
     *GPPUDCLK0 = (1<<14)|(1<<15);
     r=150; while(r--) { asm volatile("nop"); }
     *GPPUDCLK0 = 0;        // flush GPIO setup
-    // *AUX_MU_CNTL = 3;      // enable Tx, Rx
     *UART0_ICR = 0x7FF;    // clear interrupts
     *UART0_IBRD = 2;       // 115200 baud
     *UART0_FBRD = 0xB;

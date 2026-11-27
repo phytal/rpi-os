@@ -1,4 +1,4 @@
-santa-os
+santa-os (because suffering is a gift)
 
 A bare-metal kernel for the Raspberry Pi 3 (BCM2837, Cortex-A53), written in
 C and AArch64 assembly. It boots all four cores to EL1, mounts an ext2
